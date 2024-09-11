@@ -9,12 +9,18 @@ from utils.restriction_data import RestrictionDataType
 
 
 class TestGetRestrictionsUuid:
+    @allure.epic('Status code')
+    @allure.feature('200')
+    @allure.story('restrictions')
     def test_should_return_200(self, api_client, new_restriction):
         response_subject = (api_client.as_admin().restrictions().
                             uuid(new_restriction(RestrictionDataType.FEDERAL_MSC).uuid).get())
 
         assert response_subject.status_code == 200
 
+    @allure.epic('Valid model')
+    @allure.feature('without detalization')
+    @allure.story('restrictions')
     def test_should_return_valid_model(self, api_client, new_restriction):
         restriction = new_restriction(RestrictionDataType.FEDERAL_MSC)
         response = api_client.as_admin().restrictions().uuid(restriction.uuid).get()
@@ -23,7 +29,9 @@ class TestGetRestrictionsUuid:
 
         assert response_entity == restriction
 
-    @allure.issue("https://yt.monitorsoft.ru/issue/AT-3053/")
+    @allure.epic('Status code')
+    @allure.feature('401')
+    @allure.story('restrictions')
     def test_should_return_401(self, api_client, new_restriction):
         response = (api_client.restrictions().
                     uuid(new_restriction(RestrictionDataType.FEDERAL_MSC).uuid).get())
@@ -31,6 +39,9 @@ class TestGetRestrictionsUuid:
         assert response.status_code == 401
         assert Error.model_validate(response.json())
 
+    @allure.epic('Status code')
+    @allure.feature('403')
+    @allure.story('restrictions')
     def test_should_return_403(self, api_client, new_restriction):
         response = (api_client.as_atm_admin_moscow().restrictions().
                     uuid(new_restriction(RestrictionDataType.FEDERAL_MSC).uuid).get())
@@ -38,25 +49,36 @@ class TestGetRestrictionsUuid:
         assert response.status_code == 403
         assert Error.model_validate(response.json())
 
-    @allure.issue("https://yt.monitorsoft.ru/issue/AT-3051/")
+    @allure.epic('Status code')
+    @allure.feature('404')
+    @allure.story('restrictions')
     def test_should_return_404(self, api_client):
         response = api_client.as_admin().restrictions().uuid(uuid4()).get()
 
         assert response.status_code == 404
         assert Error.model_validate(response.json())
 
+    @allure.epic('Status code')
+    @allure.feature('422')
+    @allure.story('restrictions')
     def test_should_return_422(self, api_client):
         response = api_client.as_admin().aerial_photos().get('/wrong-uuid')
 
         assert response.status_code == 422
         assert Error.model_validate(response.json())
 
+    @allure.epic('Status code')
+    @allure.feature('500')
+    @allure.story('restrictions')
     def test_should_return_500(self, api_client):
         response = api_client.as_admin().restrictions().uuid(uuid4()).get()
 
         assert response.status_code == 500
         assert Error.model_validate(response.json())
 
+    @allure.epic('Access')
+    @allure.feature('default')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -68,6 +90,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('pilot')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -79,6 +104,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 200
 
+    @allure.epic('Access')
+    @allure.feature('browsing_dispatcher')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -90,6 +118,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('dispatcher_gc')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -101,6 +132,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('atm_dispatcher')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -112,6 +146,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('admin')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -122,6 +159,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 200
 
+    @allure.epic('Access')
+    @allure.feature('atm_admin')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -132,11 +172,17 @@ class TestGetRestrictionsUuid:
                     uuid(new_restriction(data_param).uuid).get())
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('super_admin')
+    @allure.story('restrictions')
     @pytest.mark.skip("can't create super admin via SPPI UI")
     @pytest.mark.access
     def test_access_super_admin(self):
         pass
 
+    @allure.epic('Access')
+    @allure.feature('aircompany')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -148,6 +194,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 200
 
+    @allure.epic('Access')
+    @allure.feature('subject_representative')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -162,6 +211,9 @@ class TestGetRestrictionsUuid:
         else:
             assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('lsg_representative')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -173,6 +225,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 200
 
+    @allure.epic('Access')
+    @allure.feature('mod_representative')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -184,6 +239,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_mo')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -195,6 +253,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_fsb')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -206,6 +267,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_fso')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -217,6 +281,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_mvd')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -228,6 +295,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_vv_mvd_rf')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -239,6 +309,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_mchs')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -250,6 +323,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_dosaaf')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -261,6 +337,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_custom')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -272,6 +351,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('experimental_aviation')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -283,6 +365,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('aeroinfo')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -294,6 +379,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('svs_pilot')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -305,6 +393,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 200
 
+    @allure.epic('Access')
+    @allure.feature('spw_manager')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -316,6 +407,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 200
 
+    @allure.epic('Access')
+    @allure.feature('mr_submission_manager')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -327,6 +421,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('shar_pilot')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -338,6 +435,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 200
 
+    @allure.epic('Access')
+    @allure.feature('aer_pilot')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,
@@ -349,6 +449,9 @@ class TestGetRestrictionsUuid:
 
         assert response.status_code == 200
 
+    @allure.epic('Access')
+    @allure.feature('bla_pilot')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.FEDERAL_MSC,

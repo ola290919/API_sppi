@@ -8,6 +8,9 @@ from .resrictions_test_base import RestrictionsTestBase
 
 
 class TestPostRestriction(RestrictionsTestBase):
+    @allure.epic('Status code')
+    @allure.feature('201')
+    @allure.story('restrictions')
     def test_should_return_201(self, api_client, restriction_build):
         new = restriction_build(RestrictionDataType.FEDERAL_SPB)
 
@@ -16,6 +19,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 201
 
+    @allure.epic('Valid model')
+    @allure.feature('without detalization')
+    @allure.story('restrictions')
     def test_should_return_valid_model(self, api_client, restriction_build):
         new = restriction_build(RestrictionDataType.MUNICIPAL_MSC)
 
@@ -24,7 +30,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert Restriction.model_validate(response.json())
 
-    @allure.issue("https://yt.monitorsoft.ru/issue/AT-3053/")
+    @allure.epic('Status code')
+    @allure.feature('401')
+    @allure.story('restrictions')
     def test_should_return_401(self, api_client, restriction_build):
         new = restriction_build(RestrictionDataType.FEDERAL_SPB)
 
@@ -34,6 +42,9 @@ class TestPostRestriction(RestrictionsTestBase):
         assert response.status_code == 401
         assert Error.model_validate(response.json())
 
+    @allure.epic('Status code')
+    @allure.feature('403')
+    @allure.story('restrictions')
     def test_should_return_403(self, api_client, restriction_build):
         new = restriction_build(RestrictionDataType.FEDERAL_SPB)
 
@@ -43,10 +54,16 @@ class TestPostRestriction(RestrictionsTestBase):
         assert response.status_code == 403
         assert Error.model_validate(response.json())
 
+    @allure.epic('Status code')
+    @allure.feature('409')
+    @allure.story('restrictions')
     @pytest.mark.skip("don't know what is definition of duplicate")
     def test_should_return_409(self, api_client, restriction_build):
         pass
 
+    @allure.epic('Status code')
+    @allure.feature('422')
+    @allure.story('restrictions')
     def test_should_return_422(self, api_client):
         response = api_client.as_admin().restrictions().post(json={'name': ''})
         self._add_entry_for_deletion(response)
@@ -54,6 +71,9 @@ class TestPostRestriction(RestrictionsTestBase):
         assert response.status_code == 422
         assert Error.model_validate(response.json())
 
+    @allure.epic('Status code')
+    @allure.feature('500')
+    @allure.story('restrictions')
     def test_should_return_500(self, api_client):
         response = api_client.as_admin().restrictions().post(
             json={'object_uuid': '445ef25f-9c1e-49f4-ad5e-fbe3312b90d4',
@@ -63,6 +83,9 @@ class TestPostRestriction(RestrictionsTestBase):
         assert response.status_code == 500
         assert Error.model_validate(response.json())
 
+    @allure.epic('Access')
+    @allure.feature('default')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -76,6 +99,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('pilot')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -89,6 +115,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('browsing_dispatcher')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -102,6 +131,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('dispatcher_gc')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -115,6 +147,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('atm_dispatcher')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -128,6 +163,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('admin')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -141,6 +179,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 201
 
+    @allure.epic('Access')
+    @allure.feature('atm_admin')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -154,11 +195,17 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('super_admin')
+    @allure.story('restrictions')
     @pytest.mark.skip("can't create super admin via SPPI UI")
     @pytest.mark.access
     def test_access_super_admin(self):
         pass
 
+    @allure.epic('Access')
+    @allure.feature('aircompany')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -172,6 +219,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('subject_representative')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -190,7 +240,9 @@ class TestPostRestriction(RestrictionsTestBase):
         else:
             assert response.status_code == 403
 
-    @allure.issue("https://yt.monitorsoft.ru/issue/AT-3050/")
+    @allure.epic('Access')
+    @allure.feature('lsg_representative')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -209,6 +261,9 @@ class TestPostRestriction(RestrictionsTestBase):
         else:
             assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('mod_representative')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -222,6 +277,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_mo')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -235,6 +293,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_fsb')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -248,6 +309,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_fso')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -261,6 +325,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_mvd')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -274,6 +341,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_vv_mvd_rf')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -287,6 +357,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_mchs')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -300,6 +373,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_dosaaf')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -313,6 +389,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_custom')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -326,6 +405,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('experimental_aviation')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -339,6 +421,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('aeroinfo')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -352,6 +437,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('svs_pilot')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -365,6 +453,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('spw_manager')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -378,6 +469,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('mr_submission_manager')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -391,6 +485,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('shar_pilot')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -404,6 +501,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('aer_pilot')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,
@@ -417,6 +517,9 @@ class TestPostRestriction(RestrictionsTestBase):
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('bla_pilot')
+    @allure.story('restrictions')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         RestrictionDataType.MUNICIPAL_MSC,

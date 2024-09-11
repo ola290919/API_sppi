@@ -4,36 +4,34 @@
 
 - [Роли](https://docs.google.com/spreadsheets/d/1DFgbV-dRgdI0ARPRAnqC8w505sMK-S36jFZDWbMf2GA/edit?usp=sharing)
 - [Репозиторий](https://git.monitorsoft.ru/spppi/drone-area-registry)
-- [API документация](https://git.monitorsoft.ru/spppi/drone-area-registry/-/blob/master/spec/v1_openapi.yaml)
+- [API документация](https://git.monitorsoft.ru/spppi/drone-area-registry/-/blob/2.0.0-rc.13/spec/v1_openapi.yaml)
 
 ## Установка
 
-Необходим python 3.12 (на меньших версиях не тестировался).
+Перед запуском установить Python 3.12 и выше.
 
-`pip install -r requirements.txt`
+Загрузить все необходимые пакеты через ```pip install -r requirements.txt```.
 
-Опционально `cp .env.example .env` для создания файла с переменными окружения.
+Необходимые для запуска проекта переменные указаны в файле ```.env.example```.
 
-## Переменные окружения
+Генерация локально отчета allure (прописать свой путь) ```C:\Users\mx\Downloads\allure-2.29.0\allure-2.29.0\bin\allure.bat generate allure-results --clean```
 
-Возможные переменные окружения указаны в [.env.example](.env.example). Для удобства разработки используется 
-библиотека [dotenv](https://pypi.org/project/python-dotenv/).
+Установка переменной java ```$Env:JAVA_HOME = "C:\Program Files\Java\jre1.8.0_421"```
 
 ## Запуск
 
 Тесты используют заранее созданных пользователей в системе. Логины и пароли указываются в переменных окружения.
 
-`pytest tests/`
+`pytest`
 
-В проекте используются тега (pytest marks) для более удобного запуска тестов, например, для того, чтобы запустить только
+Запуск в jenkins через jenkinsfile
+
+В проекте используются теги (pytest marks) для более удобного запуска тестов, например, для того, чтобы запустить только
 тесты, которые проверяют доступ, можно использовать команду `pytest -m access`.
 
-Для запуска в несколько потоков можно использовать `pytest -n 4`, где `-n` - количество потоков, однако рекомендуется
-запускать в один поток, так как верная работа тестов не гарантирована.
+Для запуска в несколько потоков можно использовать `pytest -n 4`, где `-n` - количество потоков.
 
-Для запуска с созданием отчета allure в несколько потоков: `pytest --alluredir allure-results -n 6`.
-
-## Разработка
+В pytest.ini заданы параметры запуска с автоматическим созданием отчета allure  `--alluredir allure-results`.
 
 ### Структура
 
@@ -84,9 +82,3 @@ factory, для их создания используется [Factory Boy](htt
 
 [Класс BaseClient](utils/base_client.py) является сервисным и наследуется классами для запросов. Класс не содержит большого количества
 методов и предполагает изучение перед началом работы с ним.
-
-### Коммиты
-
-Перед коммитом необходимо убедиться в том, что все файлы верно отформатированы. 
-
-Сообщение коммита формируется согласно [conventional commits](https://gist.github.com/qoomon/5dfcdf8eec66a051ecd85625518cfd13).

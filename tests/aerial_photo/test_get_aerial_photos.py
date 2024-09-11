@@ -8,24 +8,35 @@ from .aerial_photo_test_base import AerialPhotoTestBase
 
 
 class TestGetAerialPhotos(AerialPhotoTestBase):
+    @allure.epic('Status code')
+    @allure.feature('200')
+    @allure.story('aerial-photo')
     def test_should_get_200(self, api_client):
         response = api_client.as_admin().aerial_photos().get()
 
         assert response.status_code == 200
 
-    @allure.issue("https://yt.monitorsoft.ru/issue/AT-3053/")
+    @allure.epic('Status code')
+    @allure.feature('401')
+    @allure.story('aerial-photo')
     def test_should_return_401(self, api_client):
         response = api_client.aerial_photos().get()
 
         assert response.status_code == 401
         assert Error.model_validate(response.json())
 
+    @allure.epic('Status code')
+    @allure.feature('403')
+    @allure.story('aerial-photo')
     def test_should_return_403(self, api_client):
         response = api_client.as_dispatcher_gc().aerial_photos().get()
 
         assert response.status_code == 403
         assert Error.model_validate(response.json())
 
+    @allure.epic('Status code')
+    @allure.feature('422')
+    @allure.story('aerial-photo')
     def test_should_return_422(self, api_client):
         response = (api_client.as_admin().aerial_photos().
                     query({'detalization': '𐐡𐐝𐐓𐐝𐐇𐐗𐐊𐐤𐐔𐐒𐐋𐐗𐐒'}).get())
@@ -33,42 +44,65 @@ class TestGetAerialPhotos(AerialPhotoTestBase):
         assert response.status_code == 422
         assert Error.model_validate(response.json())
 
+    @allure.epic('Status code')
+    @allure.feature('500')
+    @allure.story('aerial-photo')
     @pytest.mark.skip("don't know how get 500 error")
     def test_should_return_500(self, api_client):
         pass
 
+    @allure.epic('Valid model')
+    @allure.feature('without detalization')
+    @allure.story('aerial-photo')
     def test_should_has_valid_models(self, api_client):
         response = api_client.as_admin().aerial_photos().get()
 
         assert AerialPhotosList.model_validate(response.json())
 
+    @allure.epic('Valid model')
+    @allure.feature('with detalization')
+    @allure.story('aerial-photo')
     def test_should_has_valid_models_with_detalization_self(self, api_client):
         response = api_client.as_admin().aerial_photos().query({'detalization': 'self'}).get()
 
         assert AerialPhotosList.model_validate(response.json())
         # pass
 
+    @allure.epic('Valid model')
+    @allure.feature('with detalization')
+    @allure.story('aerial-photo')
     def test_should_has_valid_models_with_detalization_detail(self, api_client):
         response = api_client.as_admin().aerial_photos().query({'detalization': 'detail'}).get()
 
         assert AerialPhotosList.model_validate(response.json())
 
+    @allure.epic('Valid model')
+    @allure.feature('with detalization')
+    @allure.story('aerial-photo')
     def test_should_has_valid_models_with_detalization_grid(self, api_client):
         response = api_client.as_admin().aerial_photos().query({'detalization': 'grid'}).get()
 
         assert AerialPhotosListGrid.model_validate(response.json())
 
-    @allure.issue("https://yt.monitorsoft.ru/issue/AT-3059/")
+    @allure.epic('Valid model')
+    @allure.feature('with detalization')
+    @allure.story('aerial-photo')
     def test_should_has_valid_models_with_detalization_short(self, api_client):
         response = api_client.as_admin().aerial_photos().query({'detalization': 'short'}).get()
 
         assert EntityShortList.model_validate(response.json())
 
+    @allure.epic('Valid model')
+    @allure.feature('with detalization')
+    @allure.story('aerial-photo')
     def test_should_has_valid_models_with_detalization_full(self, api_client):
         response = api_client.as_admin().aerial_photos().query({'detalization': 'full'}).get()
 
         assert AerialPhotosList.model_validate(response.json())
 
+    @allure.epic('Parameters')
+    @allure.feature('filter_by_uuid')
+    @allure.story('aerial-photo')
     def test_should_filter_by_uuid(self, api_client, aerial_photos_list):
         uuid = aerial_photos_list[0].uuid
 
@@ -78,6 +112,9 @@ class TestGetAerialPhotos(AerialPhotoTestBase):
         assert len(response.data) == 1
         assert response.data[0].uuid == uuid
 
+    @allure.epic('Parameters')
+    @allure.feature('filter_by_uuid')
+    @allure.story('aerial-photo')
     @pytest.mark.not_stable
     def test_should_filter_by_uuid_list(self, api_client, aerial_photos_list):
         uuid_list = [aerial_photos_list[i].uuid for i in range(3)]
@@ -89,6 +126,9 @@ class TestGetAerialPhotos(AerialPhotoTestBase):
         for i in range(3):
             assert response.data[i].uuid == aerial_photos_list[i].uuid
 
+    @allure.epic('Parameters')
+    @allure.feature('limit')
+    @allure.story('aerial-photo')
     def test_should_limit(self, api_client, aerial_photos_list):
         response = AerialPhotosList.model_validate(
             api_client.as_admin().aerial_photos().limit(1).get().json())
@@ -96,6 +136,9 @@ class TestGetAerialPhotos(AerialPhotoTestBase):
         assert len(response.data) == 1
         assert len(response.data) < len(aerial_photos_list)
 
+    @allure.epic('Parameters')
+    @allure.feature('offset')
+    @allure.story('aerial-photo')
     @pytest.mark.not_stable
     def test_should_offset(self, api_client, aerial_photos_list):
         response = AerialPhotosList.model_validate(
@@ -103,11 +146,17 @@ class TestGetAerialPhotos(AerialPhotoTestBase):
 
         assert response.data[0] == aerial_photos_list[1]
 
+    @allure.epic('Parameters')
+    @allure.feature('search')
+    @allure.story('aerial-photo')
+    @pytest.mark.not_stable
     @pytest.mark.skip("don't have docs what fields included in search")
     def test_should_search(self):
         pass
 
-    @allure.issue("https://yt.monitorsoft.ru/issue/AT-3058/")
+    @allure.epic('Parameters')
+    @allure.feature('filter_by_name')
+    @allure.story('aerial-photo')
     def test_should_filter_by_name(self, api_client, aerial_photo):
         name = aerial_photo.name
         filtered_list = AerialPhotosList.model_validate(
@@ -116,7 +165,9 @@ class TestGetAerialPhotos(AerialPhotoTestBase):
         assert len(filtered_list) == 1
         assert filtered_list[0].name == name
 
-    @allure.issue("https://yt.monitorsoft.ru/issue/AT-3048/")
+    @allure.epic('Parameters')
+    @allure.feature('filter_by_name')
+    @allure.story('aerial-photo')
     def test_should_filter_by_name_list(self, api_client):
         names_list = []
         for _ in range(2):
@@ -130,6 +181,9 @@ class TestGetAerialPhotos(AerialPhotoTestBase):
         assert len(filtered_list) == 2
         assert [entity.name for entity in filtered_list] == names_list
 
+    @allure.epic('Parameters')
+    @allure.feature('sort_by_name')
+    @allure.story('aerial-photo')
     def test_should_sort_by_name_asc(self, api_client):
         uuids_list = []
         for _ in range(3):
@@ -147,6 +201,9 @@ class TestGetAerialPhotos(AerialPhotoTestBase):
 
         assert (sorted([entity.name for entity in unsorted_list]) == [entity.name for entity in sorted_list_asc])
 
+    @allure.epic('Parameters')
+    @allure.feature('sort_by_name')
+    @allure.story('aerial-photo')
     def test_should_sort_by_name_desc(self, api_client):
         uuids_list = []
         for _ in range(3):
@@ -165,167 +222,251 @@ class TestGetAerialPhotos(AerialPhotoTestBase):
         assert (sorted([entity.name for entity in unsorted_list], reverse=True) ==
                 [entity.name for entity in sorted_list_desc])
 
+    @allure.epic('Access')
+    @allure.feature('default')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_default(self, api_client):
         response = api_client.as_default().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('pilot')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_pilot(self, api_client):
         response = api_client.as_pilot().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('browsing_dispatcher')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_browsing_dispatcher(self, api_client):
         response = api_client.as_browsing_dispatcher().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('dispatcher_gc')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_dispatcher_gc(self, api_client):
         response = api_client.as_dispatcher_gc().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('atm_dispatcher')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_atm_dispatcher(self, api_client):
         response = api_client.as_atm_dispatcher_moscow().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('admin')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_admin(self, api_client):
         response = api_client.as_admin().aerial_photos().get()
 
         assert response.status_code == 200
 
+    @allure.epic('Access')
+    @allure.feature('atm_admin')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_atm_admin(self, api_client):
         response = api_client.as_atm_admin_moscow().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('super_admin')
+    @allure.story('aerial-photo')
     @pytest.mark.skip("can't create super admin via SPPI UI")
     @pytest.mark.access
     def test_access_super_admin(self, api_client):
         pass
 
+    @allure.epic('Access')
+    @allure.feature('aircompany')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_aircompany(self, api_client):
         response = api_client.as_aircompany().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('subject_representative')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_subject_representative(self, api_client):
         response = api_client.as_subject_representative_moscow().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('lsg_representative')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_lsg_representative(self, api_client):
         response = api_client.as_lsg_representative_moscow().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('mod_representative')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_mod_representative(self, api_client):
         response = api_client.as_mod_representative().aerial_photos().get()
 
         assert response.status_code == 200
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_mo')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_gosaviaciya_mo(self, api_client):
         response = api_client.as_gosaviaciya_mo().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_fsb')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_gosaviaciya_fsb(self, api_client):
         response = api_client.as_gosaviaciya_fsb().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_fso')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_gosaviaciya_fso(self, api_client):
         response = api_client.as_gosaviaciya_fso().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_mvd')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_gosaviaciya_mvd(self, api_client):
         response = api_client.as_gosaviaciya_mvd().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_vv_mvd_rf')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_gosaviaciya_vv_mvd_rf(self, api_client):
         response = api_client.as_gosaviaciya_vv_mvd_rf().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_mchs')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_gosaviaciya_mchs(self, api_client):
         response = api_client.as_gosaviaciya_mchs().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_dosaaf')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_gosaviaciya_dosaaf(self, api_client):
         response = api_client.as_gosaviaciya_dosaaf().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_custom')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_gosaviaciya_custom(self, api_client):
         response = api_client.as_gosaviaciya_custom().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('experimental_aviation')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_experimental_aviation(self, api_client):
         response = api_client.as_experimental_aviation().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('aeroinfo')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_aeroinfo(self, api_client):
         response = api_client.as_aeroinfo_uuuwzdzx().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('svs_pilot')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_svs_pilot(self, api_client):
         response = api_client.as_svs_pilot().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('spw_manager')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_spw_manager(self, api_client):
         response = api_client.as_spw_manager().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('mr_submission_manager')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_mr_submission_manager(self, api_client):
         response = api_client.as_mr_submission_manager().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('shar_pilot')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_shar_pilot(self, api_client):
         response = api_client.as_shar_pilot().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('aer_pilot')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_aer_pilot(self, api_client):
         response = api_client.as_aer_pilot().aerial_photos().get()
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('bla_pilot')
+    @allure.story('aerial-photo')
     @pytest.mark.access
     def test_access_bla_pilot(self, api_client):
         response = api_client.as_bla_pilot().aerial_photos().get()

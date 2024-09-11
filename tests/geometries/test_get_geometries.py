@@ -7,6 +7,59 @@ from utils.uuid_fetcher import UUIDType
 
 
 class TestGetGeometries:
+
+    @allure.epic('Status code')
+    @allure.feature('200')
+    @allure.story('geometries')
+    def test_should_get_200(self, api_client, uuid_data, data_param):
+        response = api_client.as_admin().geometries().query({'uuid': uuid_data(UUIDType.SUBJECT)}).get()
+
+        assert response.status_code == 200
+
+    @allure.epic('Valid model')
+    @allure.feature('without detalization')
+    @allure.story('geometries')
+    def test_should_return_valid_model(self, api_client, uuid_data):
+        # TODO need to get a valid uuid with full geometry to check its model
+        response = api_client.as_admin().geometries().query({'uuid': uuid_data(UUIDType.SUBJECT)}).get()
+
+        assert GeometriesList.model_validate(response.json())
+
+    @allure.epic('Status code')
+    @allure.feature('401')
+    @allure.story('geometries')
+    def test_should_return_401(self, api_client, uuid_data):
+        response = api_client.geometries().query({'uuid': uuid_data(UUIDType.SUBJECT)}).get()
+
+        assert response.status_code == 401
+        assert Error.model_validate(response.json())
+
+    @allure.epic('Status code')
+    @allure.feature('403')
+    @allure.story('geometries')
+    def test_should_return_403(self, api_client, uuid_data):
+        response = api_client.as_gosaviaciya_mo().geometries().query({'uuid': uuid_data(UUIDType.SUBJECT)}).get()
+
+        assert response.status_code == 403
+        assert Error.model_validate(response.json())
+
+    @allure.epic('Status code')
+    @allure.feature('422')
+    @allure.story('geometries')
+    @pytest.mark.skip("don't know how to get 422 error")
+    def test_should_return_422(self, api_client):
+        pass
+
+    @allure.epic('Status code')
+    @allure.feature('500')
+    @allure.story('geometries')
+    @pytest.mark.skip("don't know how to get 500 error")
+    def test_should_return_500(self):
+        pass
+
+    @allure.epic('Parameters')
+    @allure.feature('different_uuid')
+    @allure.story('geometries')
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
         UUIDType.MUNICIPAL,
@@ -14,46 +67,28 @@ class TestGetGeometries:
         UUIDType.RESTRICTION_SUBJECT,
         UUIDType.RESTRICTION_LSG
     ])
-    def test_should_get_200(self, api_client, uuid_data, data_param):
+    def test_should_take_different_uuid(self, api_client, uuid_data, data_param):
         response = api_client.as_admin().geometries().query({'uuid': uuid_data(data_param)}).get()
 
         assert response.status_code == 200
 
-    def test_should_return_valid_model(self, api_client, uuid_data):
-        # TODO need to get a valid uuid with full geometry to check its model
-        response = api_client.as_admin().geometries().query({'uuid': uuid_data(UUIDType.SUBJECT)}).get()
-
-        assert GeometriesList.model_validate(response.json())
-
-    @allure.issue("https://yt.monitorsoft.ru/issue/AT-3053/")
-    def test_should_return_401(self, api_client, uuid_data):
-        response = api_client.geometries().query({'uuid': uuid_data(UUIDType.SUBJECT)}).get()
-
-        assert response.status_code == 401
-        assert Error.model_validate(response.json())
-
-    def test_should_return_403(self, api_client, uuid_data):
-        response = api_client.as_gosaviaciya_mo().geometries().query({'uuid': uuid_data(UUIDType.SUBJECT)}).get()
-
-        assert response.status_code == 403
-        assert Error.model_validate(response.json())
-
-    @pytest.mark.skip("don't know how to get 422 error")
-    def test_should_return_422(self, api_client):
-        pass
-
-    @pytest.mark.skip("don't know how to get 500 error")
-    def test_should_return_500(self):
-        pass
-
+    @allure.epic('Parameters')
+    @allure.feature('limit')
+    @allure.story('geometries')
     @pytest.mark.skip("need an uuid with more that one geometry")
     def test_should_limit(self):
         pass
 
+    @allure.epic('Parameters')
+    @allure.feature('offset')
+    @allure.story('geometries')
     @pytest.mark.skip("need an uuid with more that one geometry")
     def test_should_offset(self):
         pass
 
+    @allure.epic('Access')
+    @allure.feature('default')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -67,6 +102,9 @@ class TestGetGeometries:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('pilot')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -84,6 +122,9 @@ class TestGetGeometries:
         else:
             assert response.status_code == 200
 
+    @allure.epic('Access')
+    @allure.feature('browsing_dispatcher')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -98,6 +139,9 @@ class TestGetGeometries:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('dispatcher_gc')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -112,6 +156,9 @@ class TestGetGeometries:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('atm_dispatcher')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -126,6 +173,9 @@ class TestGetGeometries:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('admin')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -139,6 +189,9 @@ class TestGetGeometries:
 
         assert response.status_code == 200
 
+    @allure.epic('Access')
+    @allure.feature('atm_admin')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -152,11 +205,17 @@ class TestGetGeometries:
                     query({'uuid': uuid_data(data_param)}).get())
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('super_admin')
+    @allure.story('geometries')
     @pytest.mark.skip("can't create super admin via SPPI UI")
     @pytest.mark.access
     def test_access_super_admin(self):
         pass
 
+    @allure.epic('Access')
+    @allure.feature('aircompany')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -174,7 +233,9 @@ class TestGetGeometries:
         else:
             assert response.status_code == 200
 
-    @allure.issue("https://yt.monitorsoft.ru/issue/AT-3063/")
+    @allure.epic('Access')
+    @allure.feature('subject_representative')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -192,6 +253,9 @@ class TestGetGeometries:
         else:
             assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('lsg_representative')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -209,6 +273,9 @@ class TestGetGeometries:
         else:
             assert response.status_code == 200
 
+    @allure.epic('Access')
+    @allure.feature('mod_representative')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -226,6 +293,9 @@ class TestGetGeometries:
         else:
             assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_mo')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -240,6 +310,9 @@ class TestGetGeometries:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_fsb')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -254,6 +327,9 @@ class TestGetGeometries:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_fso')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -268,6 +344,9 @@ class TestGetGeometries:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_mvd')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -282,6 +361,9 @@ class TestGetGeometries:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_vv_mvd_rf')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -296,6 +378,9 @@ class TestGetGeometries:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_mchs')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -310,6 +395,9 @@ class TestGetGeometries:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_dosaaf')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -324,6 +412,9 @@ class TestGetGeometries:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('gosaviaciya_custom')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -338,6 +429,9 @@ class TestGetGeometries:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('experimental_aviation')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -352,6 +446,9 @@ class TestGetGeometries:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('aeroinfo')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -366,6 +463,9 @@ class TestGetGeometries:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('svs_pilot')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -383,6 +483,9 @@ class TestGetGeometries:
         else:
             assert response.status_code == 200
 
+    @allure.epic('Access')
+    @allure.feature('spw_manager')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -400,6 +503,9 @@ class TestGetGeometries:
         else:
             assert response.status_code == 200
 
+    @allure.epic('Access')
+    @allure.feature('mr_submission_manager')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -414,6 +520,9 @@ class TestGetGeometries:
 
         assert response.status_code == 403
 
+    @allure.epic('Access')
+    @allure.feature('shar_pilot')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -431,6 +540,9 @@ class TestGetGeometries:
         else:
             assert response.status_code == 200
 
+    @allure.epic('Access')
+    @allure.feature('aer_pilot')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
@@ -448,6 +560,9 @@ class TestGetGeometries:
         else:
             assert response.status_code == 200
 
+    @allure.epic('Access')
+    @allure.feature('bla_pilot')
+    @allure.story('geometries')
     @pytest.mark.access
     @pytest.mark.parametrize("data_param", [
         UUIDType.FEDERAL,
